@@ -289,12 +289,45 @@ class Setup extends AbstractSetup
         ");
     }
 
+    public function uninstallStep4(): array
+    {
+        /** @var \SV\AlertImprovements\Repository\NotifierExtender $repo */
+        $repo = \XF::repository('SV\AlertImprovements:NotifierExtender');
+        $repo->deleteNotifierExtensions();
+
+        return [];
+    }
+
+    public function installStep9999()
+    {
+        $this->setupDynamicNotifierExtensions();
+    }
+
+    public function postInstall(array &$stateChanges)
+    {
+        $this->setupDynamicNotifierExtensions();
+    }
+
+    public function postRebuild()
+    {
+        $this->setupDynamicNotifierExtensions();
+    }
+
     public function postUpgrade($previousVersion, array &$stateChanges)
     {
         if ($previousVersion >= 2080000 && $previousVersion < 2080400)
         {
             \XF::app()->jobManager()->enqueueUnique('svAlertTotalRebuild', 'SV\AlertImprovements:AlertTotalRebuild', [], true);
         }
+
+        $this->setupDynamicNotifierExtensions();
+    }
+
+    protected function setupDynamicNotifierExtensions()
+    {
+        /** @var \SV\AlertImprovements\Repository\NotifierExtender $repo */
+        $repo = \XF::repository('SV\AlertImprovements:NotifierExtender');
+        $repo->extendNotifiers(true);
     }
 
     public function getTables(): array

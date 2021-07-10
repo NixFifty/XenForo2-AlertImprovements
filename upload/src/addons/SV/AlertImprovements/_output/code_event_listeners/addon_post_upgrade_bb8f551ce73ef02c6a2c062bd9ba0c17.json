@@ -1,0 +1,9 @@
+{
+    "event_id": "addon_post_upgrade",
+    "execute_order": 1,
+    "callback_class": "SV\\AlertImprovements\\Listener",
+    "callback_method": "addonPostUpgrade",
+    "active": true,
+    "hint": "",
+    "description": "Ensure Alert Notifier extensions are rebuild"
+}
